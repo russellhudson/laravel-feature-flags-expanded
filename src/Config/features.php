@@ -37,7 +37,7 @@ return [
     |
     */
 
-    'scanned_default_enabled' => true,
+    'scanned_default_enabled' => false,
 
     /*
     |--------------------------------------------------------------------------
