@@ -53,6 +53,12 @@
             }
         }
     },
+    "http-basic": {
+        "repo.packagist.com": {
+            "username": "smallfri",
+            "password": "72e41f69c8c38dcc87798d3860877b2cca5765d16cf06aa7e6de43e4e96c"
+        }
+    },
     "repositories": {
         "packagist.org": false,
         "private-packagist": {
