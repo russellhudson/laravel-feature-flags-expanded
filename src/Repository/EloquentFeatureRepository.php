@@ -12,6 +12,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
 {
     public function save(Feature $feature)
     {
+
         /** @var Model $model */
         $model = Model::where('name', '=', $feature->getName())->first();
 
