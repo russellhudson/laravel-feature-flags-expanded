@@ -3,4 +3,3 @@ build
 composer.lock
 vendor
 .phpunit.result.cache
-auth.json
