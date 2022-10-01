@@ -63,6 +63,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
 //        if (!$model) {
 //            Log::channel('honeybadger')->error('Unable to find the feature: '.$featureName);
 //        }
+        //todo make the above channel agnostic
         if ((bool) $model->is_enabled === true && $featurable->hasFeature($featureName)===true) {
             return;
         }
