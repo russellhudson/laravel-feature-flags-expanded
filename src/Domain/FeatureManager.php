@@ -6,7 +6,7 @@ use LaravelFeature\Domain\Model\Feature;
 use LaravelFeature\Domain\Repository\FeatureRepositoryInterface;
 use LaravelFeature\Featurable\FeaturableInterface;
 
-class FeatureManager
+class  FeatureManager
 {
     /** @var FeatureRepositoryInterface */
     private $repository;

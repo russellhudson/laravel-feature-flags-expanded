@@ -2,6 +2,8 @@
 
 namespace LaravelFeature\Repository;
 
+use Honeybadger\Honeybadger;
+use Illuminate\Support\Facades\Log;
 use LaravelFeature\Domain\Exception\FeatureException;
 use LaravelFeature\Domain\Repository\FeatureRepositoryInterface;
 use LaravelFeature\Domain\Model\Feature;
@@ -58,11 +60,10 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
     {
         /** @var Model $model */
         $model = Model::where('name', '=', $featureName)->first();
-        if (!$model) {
-            throw new FeatureException('Unable to find the feature.');
-        }
-
-        if ((bool) $model->is_enabled === true || $featurable->hasFeature($featureName) === true) {
+//        if (!$model) {
+//            Log::channel('honeybadger')->error('Unable to find the feature: '.$featureName);
+//        }
+        if ((bool) $model->is_enabled === true && $featurable->hasFeature($featureName)===true) {
             return;
         }
 

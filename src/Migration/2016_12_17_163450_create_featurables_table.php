@@ -16,7 +16,6 @@ class CreateFeaturablesTable extends Migration
         Schema::create('featurables', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('feature_id');
-
             $table->integer('featurable_id');
             $table->string('featurable_type');
         });
