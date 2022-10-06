@@ -64,7 +64,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
 //            Log::channel('honeybadger')->error('Unable to find the feature: '.$featureName);
 //        }
         //todo make the above channel agnostic
-        if ((bool) $model->is_enabled === true && $featurable->hasFeature($featureName)===true) {
+        if ($featurable->hasFeature($featureName) === false) {
             return;
         }
 
@@ -75,11 +75,12 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
     {
         /** @var Model $model */
         $model = Model::where('name', '=', $featureName)->first();
-        if (!$model) {
-            throw new FeatureException('Unable to find the feature.');
-        }
+//        if (!$model) {
+//            throw new FeatureException('Unable to find the feature.');
+//        }
 
-        if ((bool) $model->is_enabled === true || $featurable->hasFeature($featureName) === false) {
+        //todo make the above channel agnostic
+        if ($featurable->hasFeature($featureName) === false) {
             return;
         }
 
