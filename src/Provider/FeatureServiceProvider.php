@@ -61,7 +61,6 @@ class FeatureServiceProvider extends ServiceProvider
 
         Blade::directive('endfeature', function () {
             return '<?php endif; ?>';
-
         });
     }
 
@@ -72,7 +71,7 @@ class FeatureServiceProvider extends ServiceProvider
         });
 
         Blade::directive('elsefeaturefor', function () {
-            return '<?php else; ?>';
+            return '<?php else: ?>';
         });
 
         Blade::directive('endfeaturefor', function () {
