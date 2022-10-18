@@ -55,6 +55,10 @@ class FeatureServiceProvider extends ServiceProvider
             return "<?php if (app(\\LaravelFeature\\Domain\\FeatureManager::class)->isEnabled($featureName)): ?>";
         });
 
+        Blade::directive('elsefeature', function () {
+            return '<?php else; ?>';
+        });
+
         Blade::directive('endfeature', function () {
             return '<?php endif; ?>';
         });
@@ -64,6 +68,10 @@ class FeatureServiceProvider extends ServiceProvider
     {
         Blade::directive('featurefor', function ($args) {
             return "<?php if (app(\\LaravelFeature\\Domain\\FeatureManager::class)->isEnabledFor($args)): ?>";
+        });
+
+        Blade::directive('elsefeaturefor', function () {
+            return '<?php else; ?>';
         });
 
         Blade::directive('endfeaturefor', function () {
