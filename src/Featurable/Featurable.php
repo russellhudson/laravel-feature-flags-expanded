@@ -11,8 +11,8 @@ trait Featurable
     {
         $model = FeatureModel::where('name', '=', $featureName)->first();
 
-        if ((bool) $model->is_enabled === true) {
-            return true;
+        if ((bool) $model->is_enabled === false) {
+            return false;
         }
 
         $feature = $this->features()->where('name', '=', $featureName)->first();

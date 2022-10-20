@@ -75,7 +75,7 @@ class FeaturesViewScanner
     {
         $fileContents = file_get_contents($view);
 
-        preg_match_all('/@feature\(["\'](.+)["\']\)|@featurefor\(["\'](.+)["\']\,.*\)/', $fileContents, $results);
+        preg_match_all('/@feature\(["\'](.+?)["\']\)|@featurefor\(["\'](.+?)["\'],.*\)/', $fileContents, $results);
 
         return collect($results[1])
             ->merge($results[2])
