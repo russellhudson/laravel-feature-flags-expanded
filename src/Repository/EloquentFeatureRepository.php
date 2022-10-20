@@ -60,13 +60,6 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
     {
         /** @var Model $model */
         $model = Model::where('name', '=', $featureName)->first();
-//        if (!$model) {
-//            Log::channel('honeybadger')->error('Unable to find the feature: '.$featureName);
-//        }
-        //todo make the above channel agnostic
-        if ($featurable->hasFeature($featureName) === false) {
-            return;
-        }
 
         $featurable->features()->attach($model->id);
     }
@@ -91,10 +84,11 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
     {
         /** @var Model $model */
         $model = Model::where('name', '=', $featureName)->first();
-
         if (empty($model)) {
             return false;
         }
-        return ($model->is_enabled) ? true : $featurable->hasFeature($featureName);
+        if ($model->is_enabled && $featurable->hasFeature($featureName)) {
+            return true;
+        }
     }
 }
