@@ -5,6 +5,7 @@ namespace LaravelFeature\Service;
 use Illuminate\Support\Str;
 use Illuminate\Config\Repository;
 use LaravelFeature\Domain\FeatureManager;
+use App\Models\Feature;
 
 class FeaturesViewScanner
 {
@@ -41,11 +42,12 @@ class FeaturesViewScanner
         }
 
         $foundDirectives = array_unique($foundDirectives);
-
         foreach ($foundDirectives as $directive) {
-            $this->featureManager->add($directive, $this->config->get('features.scanned_default_enabled'));
+            $featureExist = Feature::where('name', $directive)->count();
+            if (!$featureExist) {
+                $this->featureManager->add($directive, $this->config->get('features.scanned_default_enabled'));
+            }
         }
-
         return $foundDirectives;
     }
 

@@ -50,7 +50,7 @@ class ScanViewsForFeaturesCommand extends Command
         $this->getOutput()->writeln('');
 
         if (count($features) === 0) {
-            $this->error('No features were found in the project views!');
+            $this->error('No NEW features were found in the project views!');
             $this->getOutput()->writeln('');
             return;
         }
