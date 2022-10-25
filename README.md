@@ -1,75 +1,21 @@
-# Laravel-Feature
+# Feature Flags
 
-[![Latest Stable Version](https://poser.pugx.org/francescomalatesta/laravel-feature/v/stable)](https://packagist.org/packages/francescomalatesta/laravel-feature)
-[![Build Status](https://travis-ci.org/francescomalatesta/laravel-feature.svg?branch=master)](https://travis-ci.org/francescomalatesta/laravel-feature)
-[![Code Coverage](https://scrutinizer-ci.com/g/francescomalatesta/laravel-feature/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/francescomalatesta/laravel-feature/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/francescomalatesta/laravel-feature/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/francescomalatesta/laravel-feature/?branch=master)
-[![StyleCI](https://styleci.io/repos/76716509/shield?branch=master)](https://styleci.io/repos/76716509)
+QUICK GATES
 
-Laravel-Feature is a package fully dedicated to feature toggling in your application, in the easiest way. For Laravel, of course.
-
-It was inspired by the [AdEspresso Feature Flag Bundle](https://github.com/adespresso/FeatureBundle).
-
-## Feature-What?
-
-Feature toggling is basically a way to **have full control on the activation of a feature** in your applications.
-
-Let's make a couple of examples to give you an idea:
-
-* you just finished to work on the latest feature and you want to push it, but the marketing team wants you to deploy it in a second moment;
-* the new killer-feature is ready, but you want to enable it only for a specific set of users;
-
-With Laravel-Feature, you can:
-
-* easily **define new features** in your application;
-* **enable/disable features** globally;
-* **enable/disable features for specific users**, or **for whatever you want**;
-
-There are many things to know about feature toggling: take a look to [this great article](http://martinfowler.com/articles/feature-toggles.html) for more info. It's a really nice and useful lecture.
-
-## Install
-
-You can install Laravel-Feature with Composer.
-
-``` bash
-$ composer require francescomalatesta/laravel-feature
 ```
+if(Feature::isEnabled('feature_name', $obj)) {
+     <!---content---->
+}
+NE
+@feature('my_awesome_feature',$obj)
+    <p>This paragraph will be visible only if "my_awesome_feature" is enabled!</p>
+@endfeature
 
-After that, you need to **add the `FeatureServiceProvider` to the `app.php` config file**.
 
-```php
-...
-LaravelFeature\Provider\FeatureServiceProvider::class,
-...
+
 ```
-
-Now you have to **run migrations**, to add the tables Laravel-Feature needs.
-
-```bash
-$ php artisan migrate
-```
-
-... and you're good to go!
-
-### Facade
-
-If you want, you can also **add the `Feature` facade** to the `aliases` array in the `app.php` config file.
-
-```php
-...
-'Feature' => \LaravelFeature\Facade\Feature::class,
-...
-```
-
-If you don't like Facades, **inject the `FeatureManager`** class wherever you want!
-
-### Config File
-
-By default, you can immediately use Laravel-Feature. However, if you want to tweak some settings, feel free to **publish the config file** with
-
-```bash
-$ php artisan vendor:publish --provider="LaravelFeature\Provider\FeatureServiceProvider"
-```
+Feature flags can be enabled at the following object in the ScholarPath App:
+($user, $role, $silo, $district, $school)
 
 ## Basic Usage
 
@@ -177,7 +123,7 @@ Even if the previous things we saw are useful, LaravelFeature **is not just abou
 
 LaravelFeature makes this possible, and also easier just as **adding a trait to our `User` class**.
 
-In fact, all you need to do is to: 
+In fact, all you need to do is to:
 
 * **add the `LaravelFeature\Featurable\Featurable` trait** to the `User` class;
 * let the same class **implement the `FeaturableInterface` interface**;
@@ -226,13 +172,13 @@ if(Feature::isEnabledFor('my.feature', $user)) {
 ```
 
 #### Other Notes
-
+**NEW ELSEFEATURE FOR BLADE DIRECTIVE**
 LaravelFeature also provides a Blade directive to check if a feature is enabled for a specific user. You can use the `@featurefor` blade tags:
 ```php
-@featurefor('my.feature', $user)
-    
-    // do $user related things here!
-    
+@featurefor('my_awesome_feature',$obj)
+    <p>This paragraph will be visible only if "my_awesome_feature" is enabled!</p>
+@elsefeaturefor
+    <p>Something else</p>
 @endfeaturefor
 ```
 
@@ -244,7 +190,7 @@ Ok, now that we got the basics, let's raise the bar!
 
 As I told before, you can easily add features management for Users just by using the `Featurable` trait and implementing the `FeaturableInterface` in the User model. However, when structuring the relationships, I decided to implement a **many-to-many polymorphic relationship**. This means that you can **add feature management to any model**!
 
-Let's make an example: imagine that **you have a `Role` model** you use to implement a basic roles systems for your users. This because you have admins and normal users. 
+Let's make an example: imagine that **you have a `Role` model** you use to implement a basic roles systems for your users. This because you have admins and normal users.
 
 So, **you rolled out the amazing killer feature but you want to enable it only for admins**. How to do this? Easy. Recap:
 
@@ -285,120 +231,6 @@ $ php artisan feature:scan
 The command will use a dedicated service to **fetch the `resources/views` folder and scan every single Blade view to find `@feature` directives**. It will then output the search results.
 
 Try it, you will like it!
-
-**Note:** if you have published the config file, you will be able to **change the list of scanned directories**.
-
-### Using a Custom Features Repository
-
-Imagine that you want to **change the place or the way you store features**. For some crazy reason, you want to store it on a static file, or on Dropbox. 
-
-Now, Eloquent doesn't have a Dropbox driver, so you can't use this package. **Bye.**
-
-Just joking! When making this package, I wanted to be sure to create a fully reusable logic if the developer doesn't want to use Eloquent anymore.
-
-To do this, I created a nice interface for the Job, and created some bindings in the Laravel Service Container. Nothing really complex, anyway.
-
-The interface I am talking about is `FeatureRepositoryInterface`.
-
-```php
-<?php
-
-namespace LaravelFeature\Domain\Repository;
-
-use LaravelFeature\Domain\Model\Feature;
-use LaravelFeature\Featurable\FeaturableInterface;
-
-interface FeatureRepositoryInterface
-{
-    public function save(Feature $feature);
-
-    public function remove(Feature $feature);
-
-    public function findByName($featureName);
-
-    public function enableFor($featureName, FeaturableInterface $featurable);
-
-    public function disableFor($featureName, FeaturableInterface $featurable);
-
-    public function isEnabledFor($featureName, FeaturableInterface $featurable);
-}
-```
-
-This interface has some methods. Let's quickly explain them:
-
-* **save**: this method is used to save a new feature on the system if not already present;
-* **remove**: this method is used to remove a feature from the system;
-* **findByName**: this method is used to find a feature from the system, given its name;
-* **enableFor**: used to enable a feature for a specific `Featurable` entity;
-* **disableFor**: used to disable a feature for a specific `Featurable` entity;
-* **isEnabledFor**: used to check if a feature is enabled for a specific `Featurable` entity;
-
-So, you will need to **create a new `DropboxFeatureRepository` that implements `FeatureRepositoryInterface`**, with all the methods you just saw.
-
-Finally, you will have to change the repository binding in the `features.php` config file:
-
-```php
-'repository' => LaravelFeature\Repository\EloquentFeatureRepository::class
-```
-
-will become...
-
-```php
-'repository' => My\Wonderful\DropboxFeatureRepository::class
-```
-
-Done! By the way, don't forget to let the entities you need to **implement the `FeaturableInterface`**.
-
-```php
-<?php
-
-namespace LaravelFeature\Featurable;
-
-interface FeaturableInterface
-{
-    public function hasFeature($featureName);
-}
-```
-
-The only method, here, is `hasFeature`. It's used to define if the given feature is enabled for that entity, or not.
-
-To have a better idea of the mechanism, feel free to look to the `EloquentFeatureRepository` class and the `Featurable` trait I built for the Eloquent implementation.
-
-## Change log
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Testing
-
-You can start tests with a simple:
-
-``` bash
-$ phpunit
-```
-
-or, also
-
-```bash
-$ composer test
-```
-
-There are two separate test suites:
-
-* Unit;
-* Integration;
-
-``` bash
-$ phpunit --testsuite=unit
-$ phpunit --testsuite=integration
-```
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
-
-## Security
-
-If you discover any security related issues, please email francescomalatesta@live.it instead of using the issue tracker.
 
 ## Credits
 
