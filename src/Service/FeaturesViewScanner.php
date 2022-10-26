@@ -44,11 +44,13 @@ class FeaturesViewScanner
         $foundDirectives = array_unique($foundDirectives);
         foreach ($foundDirectives as $directive) {
             $featureExist = Feature::where('name', $directive)->count();
+            dd($featureExist);
             if (!$featureExist) {
                 $this->featureManager->add($directive, $this->config->get('features.scanned_default_enabled'));
+                return $foundDirectives;
             }
         }
-        return $foundDirectives;
+        return [];
     }
 
     private function getAllBladeViewsInPath($path)
