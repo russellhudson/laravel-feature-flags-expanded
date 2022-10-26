@@ -5,7 +5,7 @@ namespace LaravelFeature\Service;
 use Illuminate\Support\Str;
 use Illuminate\Config\Repository;
 use LaravelFeature\Domain\FeatureManager;
-use App\Models\Feature;
+use LaravelFeature\Domain\Model\Feature;
 
 class FeaturesViewScanner
 {
