@@ -80,15 +80,35 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         $featurable->features()->detach($model->id);
     }
 
-    public function isEnabledFor($featureName, FeaturableInterface $featurable)
+    public function isEnabledFor($featureName, array $args)
     {
+        Log::alert('featurable: ' . print_r($args, true));
+
         /** @var Model $model */
         $model = Model::where('name', '=', $featureName)->first();
         if (empty($model)) {
             return false;
         }
-        if ($model->is_enabled && $featurable->hasFeature($featureName)) {
-            return true;
+
+        $i = 0;
+        for ($x = 0; $x <= count($args); $x++) {
+            if (count($args) > 1) {
+                foreach ($args as $featurable) {
+                    Log::alert('featurable: ' . print_r($featurable[$i], true));
+                    if (array_search($featurable[$i], $args) === $x) {
+                        Log::alert('search: ' . print_r($featurable[$i], true));
+                        if ($model->is_enabled && $args[$i]->hasFeature($featureName)) {
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                if ($model->is_enabled && $args[$i]->hasFeature($featureName)) {
+                    return true;
+                }
+            }
+            $i++;
+
         }
     }
 }
