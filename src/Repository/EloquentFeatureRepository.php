@@ -80,7 +80,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         $featurable->features()->detach($model->id);
     }
 
-    public function isEnabledFor($featureName, array $args)
+    public function isEnabledFor($featureName, $args)
     {
         Log::alert('featurable: ' . print_r($args, true));
 
@@ -88,6 +88,12 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         $model = Model::where('name', '=', $featureName)->first();
         if (empty($model)) {
             return false;
+        }
+
+        if (!is_array($args)) {
+            if ($model->is_enabled && $args->hasFeature($featureName)) {
+                return true;
+            }
         }
 
         $i = 0;
@@ -101,10 +107,6 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
                             return true;
                         }
                     }
-                }
-            } else {
-                if ($model->is_enabled && $args[$i]->hasFeature($featureName)) {
-                    return true;
                 }
             }
             $i++;
