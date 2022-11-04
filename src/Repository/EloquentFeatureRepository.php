@@ -90,7 +90,10 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
             return false;
         }
 
-        if (!is_array($args)) {
+        if (!is_array($args) || count($args) == 1) {
+            if (is_array($args)) {
+                $args = $args[0];
+            }
             if ($model->is_enabled && $args->hasFeature($featureName)) {
                 return true;
             }
