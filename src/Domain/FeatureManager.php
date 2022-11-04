@@ -68,7 +68,7 @@ class  FeatureManager
         return $feature->isEnabled();
     }
 
-    public function enableFor($featureName, FeaturableInterface $featurable)
+    public function enableFor($featureName, array $featurable)
     {
         $this->repository->enableFor($featureName, $featurable);
     }
@@ -78,7 +78,7 @@ class  FeatureManager
         $this->repository->disableFor($featureName, $featurable);
     }
 
-    public function isEnabledFor($featureName, FeaturableInterface $featurable)
+    public function isEnabledFor($featureName, array $featurable)
     {
         return $this->repository->isEnabledFor($featureName, $featurable);
     }
