@@ -36,7 +36,8 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         /** @var Model $model */
         $model = Model::where('name', '=', $feature->getName())->first();
         if (!$model) {
-            throw new FeatureException('Unable to find the feature.');
+            return;
+//            throw new FeatureException('Unable to find the feature.');
         }
 
         $model->delete();
@@ -47,7 +48,8 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         /** @var Model $model */
         $model = Model::where('name', '=', $featureName)->first();
         if (!$model) {
-            throw new FeatureException('Unable to find the feature.');
+            return;
+//            throw new FeatureException('Unable to find the feature.');
         }
 
         return Feature::fromNameAndStatus(
@@ -68,9 +70,6 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
     {
         /** @var Model $model */
         $model = Model::where('name', '=', $featureName)->first();
-//        if (!$model) {
-//            throw new FeatureException('Unable to find the feature.');
-//        }
 
         //todo make the above channel agnostic
         if ($featurable->hasFeature($featureName) === false) {
@@ -82,7 +81,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
 
     public function isEnabledFor($featureName, $args)
     {
-        Log::alert('featurable: ' . print_r($args, true));
+        Log::alert('featurable 1: ' . print_r($args, true));
 
         /** @var Model $model */
         $model = Model::where('name', '=', $featureName)->first();
@@ -91,29 +90,27 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         }
 
         if (!is_array($args) || count($args) == 1) {
+            Log::alert('args: ' . print_r($args, true));
             if (is_array($args)) {
+                Log::alert('args array: ' . print_r($args, true));
                 $args = $args[0];
             }
             if ($model->is_enabled && $args->hasFeature($featureName)) {
+                Log::alert('true: ');
                 return true;
             }
         }
 
-        $i = 0;
-        for ($x = 0; $x <= count($args); $x++) {
-            if (count($args) > 1) {
-                foreach ($args as $featurable) {
-                    Log::alert('featurable: ' . print_r($featurable[$i], true));
-                    if (array_search($featurable[$i], $args) === $x) {
-                        Log::alert('search: ' . print_r($featurable[$i], true));
-                        if ($model->is_enabled && $args[$i]->hasFeature($featureName)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            $i++;
+        Log::alert('args: ' . count($args));
 
+        if (count($args) > 1) {
+            foreach ($args as $featurable) {
+                Log::alert('featurable: ' . print_r($featurable, true));
+                if ($model->is_enabled && $featurable->hasFeature($featureName)) {
+                    return true;
+                }
+                return false;
+            }
         }
     }
 }
