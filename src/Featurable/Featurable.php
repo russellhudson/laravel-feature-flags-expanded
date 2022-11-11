@@ -9,13 +9,12 @@ trait Featurable
 {
     public function hasFeature($featureName)
     {
-        $model = FeatureModel::where('name', '=', $featureName)->first();
+        $feature = FeatureModel::where('name', '=', $featureName)->first();
 
-        if ((bool) $model->is_enabled === false) {
+        if ((bool) $feature->is_enabled === false) {
             return false;
         }
 
-        $feature = $this->features()->where('name', '=', $featureName)->first();
         return ($feature) ? true : false;
     }
 
