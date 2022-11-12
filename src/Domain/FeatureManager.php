@@ -65,7 +65,7 @@ class  FeatureManager
     {
         /** @var Feature $feature */
         $feature = $this->repository->findByName($featureName);
-        return $feature->isEnabled();
+        return ($feature) ? $feature->isEnabled() : false;
     }
 
     public function enableFor($featureName, array $featurable)
