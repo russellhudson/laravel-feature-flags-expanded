@@ -83,6 +83,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
     {
 
         Log::alert('featurable 1: ' . print_r($args, true));
+        Log::alert('featureName: ' . print_r($featureName, true));
 
         /** @var Model $model */
         $model = Model::where('name', '=', $featureName)->first();
