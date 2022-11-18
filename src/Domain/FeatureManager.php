@@ -2,6 +2,7 @@
 
 namespace LaravelFeature\Domain;
 
+use Illuminate\Support\Facades\Log;
 use LaravelFeature\Domain\Model\Feature;
 use LaravelFeature\Domain\Repository\FeatureRepositoryInterface;
 use LaravelFeature\Featurable\FeaturableInterface;
@@ -64,8 +65,12 @@ class  FeatureManager
     public function isEnabled($featureName)
     {
         /** @var Feature $feature */
+        Log::alert('Feature Name: '.print_r($featureName, true));
+
         $feature = $this->repository->findByName($featureName);
-        return ($feature) ? $feature->isEnabled() : false;
+        Log::alert('Feature: '.print_r($feature, true));
+
+        return $feature && $feature->isEnabled();
     }
 
     public function enableFor($featureName, array $featurable)
