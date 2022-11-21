@@ -84,9 +84,12 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
      */
     public function isEnabledFor($featureName, $args)
     {
-//TODO add some error checking for missing data
-//        Log::alert('featurable 1: ' . print_r($args, true));
-//        Log::alert('featureName: ' . print_r($featureName, true));
+        if (empty($args) || $featureName === '') {
+            Log::alert('Arguments: ' . print_r($args, true));
+            throw new FeatureException('You are missing
+            arguments or have an error in the featurables table');
+        }
+
 
         /** @var Model $model */
         $model = Model::where('name', '=', $featureName)->first();
@@ -95,27 +98,17 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         }
 
         if (!is_array($args)) {
-            if (!$args) {
-                Log::alert('Arguments: ' . print_r($args, true));
-                throw new FeatureException('You are missing arguments');
-            }
             if ($model->is_enabled && $args->hasFeature($featureName)) {
                 return true;
             }
-            return false;
         } else {
-            if (count($args)) {
-                foreach ($args as $featurable) {
-                    if (!$featurable) {
-                        Log::alert('Arguments: ' . print_r($args, true));
-                        throw new FeatureException('You are missing a feature in the featurables table');
-                    }
-
-                    if ($model->is_enabled && $featurable->hasFeature($featureName)) {
-                        return true;
-                    }
+            foreach ($args as $featurable) {
+                if ($model->is_enabled && $featurable->hasFeature($featureName)) {
+                    return true;
                 }
             }
+
         }
+        return false;
     }
 }
