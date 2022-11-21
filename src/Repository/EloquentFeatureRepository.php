@@ -79,6 +79,9 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         $featurable->features()->detach($model->id);
     }
 
+    /**
+     * @throws FeatureException
+     */
     public function isEnabledFor($featureName, $args)
     {
 //TODO add some error checking for missing data
@@ -92,7 +95,10 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         }
 
         if (!is_array($args)) {
-//            Log::alert('args: ' . print_r($args, true));
+            if (!$args) {
+                Log::alert('Arguments: ' . print_r($args, true));
+                throw new FeatureException('You are missing arguments');
+            }
             if ($model->is_enabled && $args->hasFeature($featureName)) {
                 return true;
             }
@@ -101,7 +107,8 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
             if (count($args)) {
                 foreach ($args as $featurable) {
                     if (!$featurable) {
-                          throw new FeatureException('You are missing a feature in the featurables table');
+                        Log::alert('Arguments: ' . print_r($args, true));
+                        throw new FeatureException('You are missing a feature in the featurables table');
                     }
 
                     if ($model->is_enabled && $featurable->hasFeature($featureName)) {
