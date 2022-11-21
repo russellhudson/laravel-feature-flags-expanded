@@ -97,17 +97,16 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
                 return true;
             }
             return false;
-
         } else {
-//            Log::alert('args array: ' . print_r($args, true));
             if (count($args)) {
                 foreach ($args as $featurable) {
-//                    Log::alert('featurable 2: ' . print_r($featurable->hasFeature($featureName), true));
+                    if (!$featurable) {
+                          throw new FeatureException('You are missing a feature in the featurables table');
+                    }
 
                     if ($model->is_enabled && $featurable->hasFeature($featureName)) {
                         return true;
                     }
-                    return false;
                 }
             }
         }
