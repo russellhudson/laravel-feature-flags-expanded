@@ -9,7 +9,7 @@ trait Featurable
 {
     public function hasFeature($featureName)
     {
-        $feature = FeatureModel::where('name', '=', $featureName)->first();
+        $feature = FeatureModel::where('slug', '=', $featureName)->first();
 
         if ((bool) $feature->is_enabled === false) {
             return false;

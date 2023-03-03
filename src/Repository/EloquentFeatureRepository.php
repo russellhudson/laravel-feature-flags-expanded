@@ -15,7 +15,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
     public function save(Feature $feature)
     {
         /** @var Model $model */
-        $model = Model::where('name', '=', $feature->getName())->first();
+        $model = Model::where('slug', '=', $feature->getName())->first();
 
         if (!$model) {
             $model = new Model();
@@ -34,7 +34,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
     public function remove(Feature $feature)
     {
         /** @var Model $model */
-        $model = Model::where('name', '=', $feature->getName())->first();
+        $model = Model::where('slug', '=', $feature->getName())->first();
         if (!$model) {
             return;
 //            throw new FeatureException('Unable to find the feature.');
@@ -46,7 +46,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
     public function findByName($featureName)
     {
         /** @var Model $model */
-        $model = Model::where('name', '=', $featureName)->first();
+        $model = Model::where('slug', '=', $featureName)->first();
         if (!$model) {
             return;
 //            throw new FeatureException('Unable to find the feature.');
@@ -61,7 +61,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
     public function enableFor($featureName, FeaturableInterface $featurable)
     {
         /** @var Model $model */
-        $model = Model::where('name', '=', $featureName)->first();
+        $model = Model::where('slug', '=', $featureName)->first();
 
         $featurable->features()->attach($model->id);
     }
@@ -69,7 +69,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
     public function disableFor($featureName, FeaturableInterface $featurable)
     {
         /** @var Model $model */
-        $model = Model::where('name', '=', $featureName)->first();
+        $model = Model::where('slug', '=', $featureName)->first();
 
         //todo make the above channel agnostic
         if ($featurable->hasFeature($featureName) === false) {
@@ -92,7 +92,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
 
 
         /** @var Model $model */
-        $model = Model::where('name', '=', $featureName)->first();
+        $model = Model::where('slug', '=', $featureName)->first();
         if (empty($model)) {
             return false;
         }
