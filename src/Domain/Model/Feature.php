@@ -15,7 +15,7 @@ class Feature
 
     private function __construct($name, $isEnabled)
     {
-        $this->name = $name;
+        $this->slug = $name;
         $this->isEnabled = $isEnabled;
     }
 
@@ -24,7 +24,7 @@ class Feature
      */
     public function getName()
     {
-        return $this->name;
+        return $this->slug;
     }
 
     /**
@@ -37,7 +37,7 @@ class Feature
 
     public function setNewName($newName)
     {
-        $this->name = $newName;
+        $this->slug = $newName;
     }
 
     public function enable()

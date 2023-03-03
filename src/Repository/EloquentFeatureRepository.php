@@ -21,7 +21,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
             $model = new Model();
         }
 
-        $model->name = $feature->getName();
+        $model->slug = $feature->getName();
         $model->is_enabled = $feature->isEnabled();
 
         try {
@@ -53,7 +53,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         }
 
         return Feature::fromNameAndStatus(
-            $model->name,
+            $model->slug,
             $model->is_enabled
         );
     }

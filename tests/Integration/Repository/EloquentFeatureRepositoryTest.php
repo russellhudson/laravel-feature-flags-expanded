@@ -267,7 +267,7 @@ class EloquentFeatureRepositoryTest extends TestCase
     {
         $feature = new FeatureModel;
 
-        $feature->name = $name;
+        $feature->slug = $name;
         $feature->is_enabled = $isEnabled;
         $feature->save();
 
@@ -277,7 +277,7 @@ class EloquentFeatureRepositoryTest extends TestCase
     private function addTestEntity()
     {
         $entity = new FeaturableTestEntity();
-        $entity->name = 'test-entity';
+        $entity->slug = 'test-entity';
         $entity->save();
 
         return $entity;
