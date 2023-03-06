@@ -66,7 +66,6 @@ class  FeatureManager
     {
         /** @var Feature $feature */
         $feature = $this->repository->findByName($featureName);
-        dd($feature);
 
         return $feature && $feature->isEnabled();
     }
