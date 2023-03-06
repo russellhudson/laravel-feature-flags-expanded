@@ -65,10 +65,8 @@ class  FeatureManager
     public function isEnabled($featureName)
     {
         /** @var Feature $feature */
-//        Log::alert('Feature Name: '.print_r($featureName, true));
-
+echo $featureName;
         $feature = $this->repository->findByName($featureName);
-//        Log::alert('Feature: '.print_r($feature, true));
 
         return $feature && $feature->isEnabled();
     }
