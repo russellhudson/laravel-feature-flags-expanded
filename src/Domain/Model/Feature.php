@@ -1,52 +1,30 @@
 <?php
 
-namespace LaravelFeature\Domain\Model;
+namespace LaravelFeature\Facade;
 
-class Feature
+use LaravelFeature\Domain\FeatureManager;
+use Illuminate\Support\Facades\Facade;
+
+/**
+ * @method static void add($featureName, $isEnabled)
+ * @method static void remove($featureName)
+ * @method static void rename($featureOldName, $featureNewName)
+ * @method static void enable($featureName)
+ * @method static void disable($featureName)
+ * @method static void isEnabled($featureName)
+ * @method static bool enableFor($featureName, \LaravelFeature\Featurable\FeaturableInterface $featurable)
+ * @method static void disableFor($featureName, \LaravelFeature\Featurable\FeaturableInterface $featurable,int $fid)
+ * @method static bool isEnabledFor($featureName, \LaravelFeature\Featurable\FeaturableInterface $featurable)
+ */
+class Feature extends Facade
 {
-    private $name;
-    private $isEnabled;
-
-    public static function fromNameAndStatus($name, $isEnabled)
-    {
-        $feature = new self($name, (bool) $isEnabled);
-        return $feature;
-    }
-
-    private function __construct($name, $isEnabled)
-    {
-        $this->slug = $name;
-        $this->isEnabled = $isEnabled;
-    }
-
     /**
+     * Get the registered name of the component.
+     *
      * @return string
      */
-    public function getName()
+    protected static function getFacadeAccessor()
     {
-        return $this->slug;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return $this->isEnabled;
-    }
-
-    public function setNewName($newName)
-    {
-        $this->slug = $newName;
-    }
-
-    public function enable()
-    {
-        $this->isEnabled = true;
-    }
-
-    public function disable()
-    {
-        $this->isEnabled = false;
+        return FeatureManager::class;
     }
 }
