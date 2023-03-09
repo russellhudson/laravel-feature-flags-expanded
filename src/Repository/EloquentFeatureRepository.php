@@ -48,8 +48,8 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         /** @var Model $model */
         $model = Model::where('slug', '=', $featureName)->first();
         if (!$model) {
-//            return;
-            throw new FeatureException('Unable to find the feature.');
+            return;
+//            throw new FeatureException('Unable to find the feature.');
         }
 
         return Feature::fromNameAndStatus(
