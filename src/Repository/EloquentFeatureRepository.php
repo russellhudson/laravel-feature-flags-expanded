@@ -2,6 +2,7 @@
 
 namespace LaravelFeature\Repository;
 
+use App\Models\FeaturableTable;
 use Honeybadger\Honeybadger;
 use Illuminate\Support\Facades\Log;
 use LaravelFeature\Domain\Exception\FeatureException;
@@ -49,7 +50,6 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         $model = Model::where('slug', '=', $featureName)->first();
         if (!$model) {
             return;
-//            throw new FeatureException('Unable to find the feature.');
         }
 
         return Feature::fromNameAndStatus(
@@ -68,14 +68,22 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
 
     public function disableFor($featureName, FeaturableInterface $featurable)
     {
-        /** @var Model $model */
         $model = Model::where('slug', '=', $featureName)->first();
 
-        //todo make the above channel agnostic
-        if ($featurable->hasFeature($featureName) === false) {
-            return;
-        }
+        if (class_exists(FeaturableTable::class)) {
+            $thing = FeaturableTable::where('featurable_id', $featurable->id)
+            ->where('feature_id', $model->id)
+            ->whereRaw("featurable_type like '%".$this->handle_backslash(get_class($featurable))."%'")
+            ->get();
 
+            if ($thing->isEmpty()) {
+                $model = Model::where('slug', '=', $featureName)->first();
+
+                $featurable->features()->attach($model->id);
+
+                return;
+            }
+        }
         $featurable->features()->detach($model->id);
     }
 
@@ -110,5 +118,10 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
 
         }
         return false;
+    }
+
+    public static function handle_backslash($value): string
+    {
+        return str_replace('\\', '\\\\\\\\', $value);
     }
 }
