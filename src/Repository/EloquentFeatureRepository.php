@@ -2,14 +2,14 @@
 
 namespace LaravelFeature\Repository;
 
-use App\Models\FeaturableTable;
 use Honeybadger\Honeybadger;
 use Illuminate\Support\Facades\Log;
 use LaravelFeature\Domain\Exception\FeatureException;
 use LaravelFeature\Domain\Repository\FeatureRepositoryInterface;
-use App\Models\Feature;
+use LaravelFeature\Domain\Model\Feature;
 use LaravelFeature\Featurable\FeaturableInterface;
 use LaravelFeature\Model\Feature as Model;
+
 
 class EloquentFeatureRepository implements FeatureRepositoryInterface
 {
