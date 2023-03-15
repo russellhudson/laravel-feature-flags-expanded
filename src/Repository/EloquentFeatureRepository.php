@@ -2,7 +2,6 @@
 
 namespace LaravelFeature\Repository;
 
-use App\Models\FeaturableTable;
 use Honeybadger\Honeybadger;
 use Illuminate\Support\Facades\Log;
 use LaravelFeature\Domain\Exception\FeatureException;
@@ -37,6 +36,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         /** @var Model $model */
         $model = Model::where('slug', '=', $feature->getName())->first();
         if (!$model) {
+//            return;
             throw new FeatureException('Unable to find the feature.');
         }
 
@@ -49,9 +49,10 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         $model = Model::where('slug', '=', $featureName)->first();
         if (!$model) {
             return;
+//            throw new FeatureException('Unable to find the feature.');
         }
 
-        return $model::fromNameAndStatus(
+        return Feature::fromNameAndStatus(
             $model->slug,
             $model->is_enabled
         );
@@ -67,20 +68,14 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
 
     public function disableFor($featureName, FeaturableInterface $featurable)
     {
+        /** @var Model $model */
         $model = Model::where('slug', '=', $featureName)->first();
 
-        $thing = FeaturableTable::where('featurable_id', $featurable->id)
-            ->where('feature_id', $model->id)
-            ->whereRaw("featurable_type like '%".$this->handle_backslash(get_class($featurable))."%'")
-            ->get();
-        if($thing->isEmpty())
-        {
-            $model = Model::where('slug', '=', $featureName)->first();
-
-            $featurable->features()->attach($model->id);
-
+        //todo make the above channel agnostic
+        if ($featurable->hasFeature($featureName) === false) {
             return;
         }
+
         $featurable->features()->detach($model->id);
     }
 
@@ -112,12 +107,8 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
                     return true;
                 }
             }
+
         }
         return false;
-    }
-
-    public static function handle_backslash($value): string
-    {
-        return str_replace('\\', '\\\\\\\\', $value);
     }
 }
