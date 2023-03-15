@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static void disable($featureName)
  * @method static void isEnabled($featureName)
  * @method static bool enableFor($featureName, \LaravelFeature\Featurable\FeaturableInterface $featurable)
- * @method static void disableFor($featureName, \LaravelFeature\Featurable\FeaturableInterface $featurable,int $featureId)
+ * @method static void disableFor($featureName, \LaravelFeature\Featurable\FeaturableInterface $featurable)
  * @method static bool isEnabledFor($featureName, \LaravelFeature\Featurable\FeaturableInterface $featurable)
  */
 class Feature extends Facade

@@ -37,7 +37,6 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         /** @var Model $model */
         $model = Model::where('slug', '=', $feature->getName())->first();
         if (!$model) {
-//            return;
             throw new FeatureException('Unable to find the feature.');
         }
 
@@ -52,7 +51,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
             return;
         }
 
-        return Feature::fromNameAndStatus(
+        return $model::fromNameAndStatus(
             $model->slug,
             $model->is_enabled
         );
@@ -68,14 +67,12 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
 
     public function disableFor($featureName, FeaturableInterface $featurable)
     {
-//        dd($featureName, $featurable, $featureId);
         $model = Model::where('slug', '=', $featureName)->first();
 
         $thing = FeaturableTable::where('featurable_id', $featurable->id)
             ->where('feature_id', $model->id)
             ->whereRaw("featurable_type like '%".$this->handle_backslash(get_class($featurable))."%'")
             ->get();
-//        dd($featurable);
         if($thing->isEmpty())
         {
             $model = Model::where('slug', '=', $featureName)->first();
@@ -84,7 +81,6 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
 
             return;
         }
-//        dd("HERE");
         $featurable->features()->detach($model->id);
     }
 
@@ -116,7 +112,6 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
                     return true;
                 }
             }
-
         }
         return false;
     }
