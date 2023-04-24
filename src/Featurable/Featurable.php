@@ -9,13 +9,45 @@ trait Featurable
 {
     public function hasFeature($featureName)
     {
-        $feature = FeatureModel::where('slug', '=', $featureName)->first();
+        $feature = FeatureModel::where('slug', '=', $featureName)
+            ->first();
 
-        if ((bool) $feature->is_enabled === false) {
+        if (!$feature || !$feature->is_enabled) {
             return false;
         }
 
-        return ($feature) ? true : false;
+        return self::isEnabledForClass('silos', $featureName, $this) ? true : false;
+
+    }
+
+    public static function isEnabledForClass($className, $featureName, $districtId = null) {
+        /** @var Feature $feature */
+        switch ($className) {
+            case 'school':
+                $class = 'App\\Models\\' . ucfirst(class_basename($className));
+                $featurableId = auth()->user()->schools()->pluck('schools.id');
+                break;
+            case 'schools_districts':
+                $class = 'App\\Models\\' . ucfirst(class_basename($className));
+                $featurableId = $districtId;
+                break;
+        }
+
+        $escSearch = self::handle_backslash($class);
+        $feature = Feature::where('slug', $featureName)->first();
+        $featurable = NULL;
+        if ($feature) {
+            $featurable = self::where('featurable_id', $featurableId)
+                ->where('feature_id', $feature->id)
+                ->whereRaw("featurable_type like '%" . $escSearch . "%'")
+                ->first();
+        }
+
+        return (!empty($featurable) && $featurable->active == 0) ? false : true;
+    }
+
+    public static function handle_backslash($value): string {
+        return str_replace('\\', '\\\\\\\\', $value);
     }
 
     public function features()
