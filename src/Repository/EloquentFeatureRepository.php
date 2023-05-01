@@ -73,7 +73,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         if (class_exists(FeaturableTable::class)) {
             $thing = FeaturableTable::where('featurable_id', $featurable->id)
             ->where('feature_id', $model->id)
-            ->whereRaw("featurable_type like '%".$this->handle_backslash(get_class($featurable))."%'")
+            ->whereRaw("featurable_type like '%".$this->handleBackslash(get_class($featurable))."%'")
             ->get();
 
             if ($thing->isEmpty()) {
@@ -120,7 +120,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
         return false;
     }
 
-    public static function handle_backslash($value): string
+    public static function handleBackslash($value): string
     {
         return str_replace('\\', '\\\\\\\\', $value);
     }

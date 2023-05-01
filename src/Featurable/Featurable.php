@@ -17,10 +17,10 @@ trait Featurable
         }
 
         return self::isEnabledForClass('silos', $featureName, $this) ? true : false;
-
     }
 
-    public static function isEnabledForClass($className, $featureName, $districtId = null) {
+    public static function isEnabledForClass($className, $featureName, $districtId = null)
+    {
         /** @var Feature $feature */
         switch ($className) {
             case 'school':
@@ -33,9 +33,13 @@ trait Featurable
                 break;
         }
 
-        $escSearch = self::handle_backslash($class);
+        if (!isset($class)) {
+            return false;
+        }
+
+        $escSearch = self::handleBackslash($class);
         $feature = Feature::where('slug', $featureName)->first();
-        $featurable = NULL;
+        $featurable = null;
         if ($feature) {
             $featurable = self::where('featurable_id', $featurableId)
                 ->where('feature_id', $feature->id)
@@ -46,7 +50,8 @@ trait Featurable
         return (!empty($featurable) && $featurable->active == 0) ? false : true;
     }
 
-    public static function handle_backslash($value): string {
+    public static function handleBackslash($value): string
+    {
         return str_replace('\\', '\\\\\\\\', $value);
     }
 
