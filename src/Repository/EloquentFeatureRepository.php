@@ -111,7 +111,7 @@ class EloquentFeatureRepository implements FeatureRepositoryInterface
             }
         } else {
             foreach ($args as $featurable) {
-                if ($model->is_enabled && $featurable->hasFeature($featureName)) {
+                if ($model->is_enabled && !empty($featurable) && $featurable->hasFeature($featureName)) {
                     return true;
                 }
             }
